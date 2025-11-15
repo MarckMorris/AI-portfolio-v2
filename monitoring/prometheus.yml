@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'walmart_services'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'retail-assortment-agent:8001'
+          - 'retail-pricing-simulator:8002'
+          - 'retail-catalog-normalizer:8003'
+          - 'retail-replenishment-planner:8004'
+          - 'retail-product-matching:8005'
+          - 'retail-customer-inquiry:8006'
+          - 'retail-a11y-review:8007'
+          - 'merch-vendor-scorecard:8008'
+          - 'merch-planogram-helper:8009'
+          - 'merch-promo-optimizer:8010'
+          - 'merch-returns-analyzer:8011'
+          - 'merch-forecast-comparator:8012'
+          - 'merch-content-enrichment:8013'
+          - 'merch-shelf-gap-detector:8014'
+          - 'pm-okr-advisor:8015'
+          - 'pm-prd-writer:8016'
+          - 'pm-experiment-copilot:8017'
+          - 'pm-backlog-prioritizer:8018'
+          - 'pm-stakeholder-qa:8019'
+          - 'pm-risk-register:8020'

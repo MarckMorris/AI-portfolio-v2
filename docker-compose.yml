@@ -1,0 +1,232 @@
+version: "3.8"
+
+networks:
+  wm-net:
+    driver: bridge
+
+volumes:
+  grafana-storage:
+
+services:
+  # ==================== FRONTEND ====================
+  frontend:
+    build: ./frontend
+    container_name: wm_frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - wm-net
+    depends_on:
+      - retail-assortment-agent
+      - retail-pricing-simulator
+      - retail-catalog-normalizer
+      - retail-replenishment-planner
+      - retail-product-matching
+      - retail-customer-inquiry
+      - retail-a11y-review
+      - merch-vendor-scorecard
+      - merch-planogram-helper
+      - merch-promo-optimizer
+      - merch-returns-analyzer
+      - merch-forecast-comparator
+      - merch-content-enrichment
+      - merch-shelf-gap-detector
+      - pm-okr-advisor
+      - pm-prd-writer
+      - pm-experiment-copilot
+      - pm-backlog-prioritizer
+      - pm-stakeholder-qa
+      - pm-risk-register
+
+  # ==================== RETAIL SERVICES ====================
+  retail-assortment-agent:
+    build: ./retail-assortment-agent
+    container_name: retail_assortment
+    ports:
+      - "8001:8001"
+    networks:
+      - wm-net
+
+  retail-pricing-simulator:
+    build: ./retail-pricing-simulator
+    container_name: retail_pricing
+    ports:
+      - "8002:8002"
+    networks:
+      - wm-net
+
+  retail-catalog-normalizer:
+    build: ./retail-catalog-normalizer
+    container_name: retail_catalog
+    ports:
+      - "8003:8003"
+    networks:
+      - wm-net
+
+  retail-replenishment-planner:
+    build: ./retail-replenishment-planner
+    container_name: retail_replenishment
+    ports:
+      - "8004:8004"
+    networks:
+      - wm-net
+
+  retail-product-matching:
+    build: ./retail-product-matching
+    container_name: retail_matching
+    ports:
+      - "8005:8005"
+    networks:
+      - wm-net
+
+  retail-customer-inquiry:
+    build: ./retail-customer-inquiry
+    container_name: retail_inquiry
+    ports:
+      - "8006:8006"
+    networks:
+      - wm-net
+
+  retail-a11y-review:
+    build: ./retail-a11y-review
+    container_name: retail_a11y
+    ports:
+      - "8007:8007"
+    networks:
+      - wm-net
+
+  # ==================== MERCHANDISING SERVICES ====================
+  merch-vendor-scorecard:
+    build: ./merch-vendor-scorecard
+    container_name: merch_vendor
+    ports:
+      - "8008:8008"
+    networks:
+      - wm-net
+
+  merch-planogram-helper:
+    build: ./merch-planogram-helper
+    container_name: merch_planogram
+    ports:
+      - "8009:8009"
+    networks:
+      - wm-net
+
+  merch-promo-optimizer:
+    build: ./merch-promo-optimizer
+    container_name: merch_promo
+    ports:
+      - "8010:8010"
+    networks:
+      - wm-net
+
+  merch-returns-analyzer:
+    build: ./merch-returns-analyzer
+    container_name: merch_returns
+    ports:
+      - "8011:8011"
+    networks:
+      - wm-net
+
+  merch-forecast-comparator:
+    build: ./merch-forecast-comparator
+    container_name: merch_forecast
+    ports:
+      - "8012:8012"
+    networks:
+      - wm-net
+
+  merch-content-enrichment:
+    build: ./merch-content-enrichment
+    container_name: merch_content
+    ports:
+      - "8013:8013"
+    networks:
+      - wm-net
+
+  merch-shelf-gap-detector:
+    build: ./merch-shelf-gap-detector
+    container_name: merch_shelf
+    ports:
+      - "8014:8014"
+    networks:
+      - wm-net
+
+  # ==================== PRODUCT MANAGEMENT SERVICES ====================
+  pm-okr-advisor:
+    build: ./pm-okr-advisor
+    container_name: pm_okr
+    ports:
+      - "8015:8015"
+    networks:
+      - wm-net
+
+  pm-prd-writer:
+    build: ./pm-prd-writer
+    container_name: pm_prd
+    ports:
+      - "8016:8016"
+    networks:
+      - wm-net
+
+  pm-experiment-copilot:
+    build: ./pm-experiment-copilot
+    container_name: pm_experiment
+    ports:
+      - "8017:8017"
+    networks:
+      - wm-net
+
+  pm-backlog-prioritizer:
+    build: ./pm-backlog-prioritizer
+    container_name: pm_backlog
+    ports:
+      - "8018:8018"
+    networks:
+      - wm-net
+
+  pm-stakeholder-qa:
+    build: ./pm-stakeholder-qa
+    container_name: pm_stakeholder
+    ports:
+      - "8019:8019"
+    networks:
+      - wm-net
+
+  pm-risk-register:
+    build: ./pm-risk-register
+    container_name: pm_risk
+    ports:
+      - "8020:8020"
+    networks:
+      - wm-net
+
+  # ==================== MONITORING ====================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: wm_prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - wm-net
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: wm_grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana-provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - wm-net
