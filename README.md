@@ -1,5 +1,5 @@
 cat > README.md << 'EOF'
-# 🏪 Walmart AI Portfolio
+# 🏪 AI Portfolio
 
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://www.docker.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -24,7 +24,7 @@ Complete microservices architecture with **20 FastAPI services**, interactive **
 ## 🚀 Quick Start
 ```bash
 # 1. Clone repository
-git clone https://github.com/MarckMorris/walmart-ai-portfolio.git
+git clone https://github.com/MarckMorris/ai-portfolio.git
 cd walmart-ai-portfolio
 
 # 2. Start all services
@@ -148,7 +148,7 @@ docker-compose logs -f
 
 ## 📊 Project Structure
 ```
-walmart-ai-portfolio/
+ai-portfolio/
 ├── retail-assortment-agent/      # Microservice 1
 │   ├── app/
 │   │   └── main.py               # FastAPI application
